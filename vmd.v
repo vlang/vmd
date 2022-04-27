@@ -15,6 +15,8 @@ mut:
 	gg             &gg.Context
 	pointer_toggle int
 	input          string
+	input_history  []string
+	history_index  int = -1
 }
 
 fn main() {
@@ -53,7 +55,21 @@ fn handle_key_down(e &gg.Event, app_ptr voidptr) {
 		}
 	}
 	if e.key_code == .enter {
+		app.input_history.insert(0, app.input)
 		app.input = ''
+		app.history_index = -1
+	}
+	if e.key_code == .up {
+		if app.history_index < app.input_history.len - 1 {
+			app.history_index += 1
+		}
+		app.input = app.input_history[app.history_index]
+	}
+	if e.key_code == .down {
+		if app.history_index > 0 {
+			app.history_index -= 1
+		}
+		app.input = app.input_history[app.history_index]
 	}
 }
 
